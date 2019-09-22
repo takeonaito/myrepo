@@ -1,0 +1,2 @@
+Gene	CADD_MSC
+SYK	3.313
