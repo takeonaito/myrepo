@@ -1,0 +1,7 @@
+## upgrade hail 
+# in work station 1
+
+pip install hail -U
+
+# in work station 2
+pip3 install hail -U
