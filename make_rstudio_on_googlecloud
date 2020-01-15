@@ -1,0 +1,104 @@
+## goal 
+to make google cloud VM and install Rstuio and make it available on your PC.
+
+
+
+
+## install google SDK 
+
+
+export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)"
+
+echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+
+
+sudo apt-get update 
+
+sudo apt-get install google-cloud-sdk
+
+
+
+# make GCC instance 
+gcloud compute instances create my-cloud-comp --image-family ubuntu-1804-lts --image-project ubuntu-os-cloud --machine-type n1-standard-8 --boot-disk-size 250GB
+
+# make firewall to allow rstudio export port 8787
+gcloud compute firewall-rules create "rstudio-tcp-rule" --allow tcp:8787 --source-ranges=0.0.0.0/0 --description="Allow port 8787 access from home IP address"
+# if you want to delete this firewall type this command
+# gcloud compute firewall-rules delete "rstudio-tcp-rule"
+
+
+
+
+
+
+# install R according to this site "https://qiita.com/JeJeNeNo/items/43fc95c4710c668e86a2"
+echo -e "\n## For R package"  | sudo tee -a /etc/apt/sources.list
+echo "deb https://cran.rstudio.com/bin/linux/ubuntu $(lsb_release -cs)-cran35/" | sudo tee -a /etc/apt/sources.list
+
+
+
+
+sudo apt update
+sudo apt install r-base
+sudo apt-get install r-base-dev
+sudo apt autoremove
+
+
+
+# install R studio according to this page "https://rstudio.com/products/rstudio/download-server/debian-ubuntu/"
+
+sudo apt-get install gdebi-core
+wget https://download2.rstudio.org/server/bionic/amd64/rstudio-server-1.2.5033-amd64.deb
+sudo gdebi rstudio-server-1.2.5033-amd64.deb
+
+sudo adduser newuser
+
+# Install other package dependencies 
+sudo apt install libcurl4-openssl-dev libssl-dev libxml2-dev
+sudo apt install libgeos-dev libproj-dev libgdal-dev libudunits2-dev
+
+# creating backet 
+gsutil mb -l us-west1 gs://my-bucket-takeonaito/
+gcloud compute ssh my-cloud-comp
+
+# install gcsfuse to mount backet
+export GCSFUSE_REPO=gcsfuse-`lsb_release -c -s`
+echo "deb http://packages.cloud.google.com/apt $GCSFUSE_REPO main" | sudo tee /etc/apt/sources.list.d/gcsfuse.list
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+
+sudo apt-get update
+sudo apt-get install gcsfuse
+
+exit
+
+# make directory for mount and mount the backet
+gcloud auth login
+
+mkdir takeo
+gcsfuse my-bucket-takeonaito ~/takeo
+
+
+# add user to Rstudio server
+sudo addgroup datascientists
+sudo adduser master # takeo0204
+cd /home/master
+sudo mkdir shared_folder
+sudo chown -R master:datascientists shared_folder/
+sudo chmod -R 770 shared_folder/
+sudo adduser brenda
+sudo gpasswd -a brenda datascientists
+sudo usermod -g analysts brenda # brenda1234
+
+su - brenda
+ln -s /home/master/shared_folder /home/brenda/shared_folder
+exit
+
+
+# paste this to google chrome
+# external ip adress can be gotten by gcloud compute instances list
+http://35.230.44.85:8787 # http://external-id:8787
+
+
+
