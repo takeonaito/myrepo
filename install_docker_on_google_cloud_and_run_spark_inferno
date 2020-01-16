@@ -1,0 +1,80 @@
+# install docker according to this page "https://docs.docker.com/v17.09/engine/installation/linux/docker-ce/ubuntu/#install-docker-ce-1"
+
+sudo apt-get remove docker docker-engine docker.io
+sudo apt update
+
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt-key fingerprint 0EBFCD88
+
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+
+sudo apt-get update
+
+sudo apt-get install docker-ce
+
+sudo docker run hello-world
+
+
+
+
+sudo docker pull wanglab/spark-inferno
+
+
+# this command will take more than one hour
+sudo docker run --rm -v /mnt/data/annotation_data_hg19:/mnt/data/annotation_data_hg19 wanglab/spark-inferno /opt/install_annot.sh /mnt/data/annotation_data_hg19 https://tf.lisanwanglab.org/GADB/metadata/metadata.latest.hg19.template
+
+
+sudo docker run -it -v /mnt/data/annotation_data_hg19:/mnt/data/annotation_data_hg19 -v /mnt/data/my_working_dir:/mnt/data/my_working_dir wanglab/spark-inferno /bin/bash
+
+
+# to try example data using SparkINFERNO
+# copy config file to working dir 
+cp sparkinferno.cfg /mnt/data/my_working_dir
+# Download the demo file
+wget https://bitbucket.org/chienyuehlee/sparkinferno-demo/raw/7deb82c44c0cdd6fd1641ffa25df7def59e88294/SparkINFERNO_demo.tgz
+# Uncompress file
+tar zxvf SparkINFERNO_demo.tgz
+
+
+# run spark inferno for lead snps
+spark_inferno.py \
+--top_snp_list lead_snps.tsv \
+--output_dir my_results/lead_snps_only \
+--config /mnt/data/my_working_dir/sparkinferno.cfg \
+--annotation_metafile /mnt/data/annotation_data_hg19/metadata/metadata.latest.hg19.tsv
+
+# once you get the result copy to your host from your docker using this code in other terminal
+
+docker cp 5558802ca9f3:/mnt/data/wanko /home/takeo
+
+
+
+
+
+
+
+docker create --name takeoinferno wanglab/spark-inferno
+docker create --name takeoinferno -it wanglab/spark-inferno /bin/bash
+docker start takeoinferno
+docker exec -it takeoinferno /bin/bash
+docker stop takeoinferno
+docker rm takeoinferno
+
+
+docker volume create testvolume
+
+sudo docker run -it -v /mnt/data/annotation_data_hg19:/mnt/data/annotation_data_hg19 -v /mnt/data/my_working_dir:/mnt/data/my_working_dir wanglab/spark-inferno \
+--mount source=/var/lib/docker/volumes/testvolume,target=/app /bin/bash
+
+
+sudo docker run -it -v /mnt/data/annotation_data_hg19:/mnt/data/annotation_data_hg19 -v /mnt/data/my_working_dir:/mnt/data/my_working_dir \
+-v /home/takeo/wanko:/mnt/data/wanko wanglab/spark-inferno /bin/bash
+
+/home/takeo/wanko
+docker exec -it practical_wilbur/bin/bash
+
+
+
