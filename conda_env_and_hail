@@ -1,0 +1,29 @@
+##  make conda enviroment and install hail and install jupyter notebook.
+## make sure that you already have JAVA. If you dont have it, use this code
+sudo apt install openjdk-8-jdk
+
+# install conda installer into your home directory
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+
+# run the installer and follow instruction
+
+bash Miniconda3-latest-Linux-x86_64.sh
+
+
+##  install hail according to https://hail.is/docs/0.2/getting_started.html
+# you might have to shut down your terminal before you run conda 
+conda create -n hail python'>=3.6,<3.8'
+conda activate hail
+pip install hail
+
+## install jupyter notebook in your hail enviroment
+
+conda activate hail
+conda install -c conda-forge notebook
+
+
+
+
+
+gcloud config set dataproc/region us-central1
+hailctl dataproc start testcloud
