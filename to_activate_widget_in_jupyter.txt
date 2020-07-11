@@ -1,0 +1,10 @@
+## to activate mt.describe(widget=True)
+
+
+1,pip install ipywidgets
+2, conda install nodejs
+3, jupyter labextension install @jupyter-widgets/jupyterlab-manager
+
+
+from ipywidgets import widgets, interactive
+from IPython.display import display
