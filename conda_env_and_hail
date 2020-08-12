@@ -14,8 +14,23 @@ bash Miniconda3-latest-Linux-x86_64.sh
 # you might have to shut down your terminal before you run conda 
 conda create -n hail python'>=3.6,<3.8'
 conda activate hail
+
+## please make sure which pip you are using. Your pip should be within hail env directory
+## e.g. (hail) takeo@envs$ which pip
+## /home/takeo/miniconda3/envs/hail/bin/pip
+## if your pip looks like this, /home/takeo/.local/bin/pip, then  you should make path to your miniconda directory
+## e.g. export PATH=/home/takeo/miniconda3/bin:$PATH
+
 pip install hail
 
+## note that from 2020 October you should use this code
+
+pip install hail --use-feature=2020-resolver
+
+
+## if you want to install specific version of hail, use this code
+
+pip  install hail==0.2.33 --use-feature=2020-resolver
 ## install jupyter notebook in your hail enviroment
 
 conda activate hail
