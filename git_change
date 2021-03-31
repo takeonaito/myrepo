@@ -1,0 +1,15 @@
+
+## change account to mcgovernlab
+git config --global user.name "mcgovernlab"
+git config --global user.email "Takeo.Naito@cshs.org"
+
+username:mcgovernlab
+pwd:Mcgovern-cedars-1234
+
+
+## change account to takeonaito
+git config --global user.name "takeonaito"
+git config --global user.email "takeo.naito24@gmail.com"
+
+username:takeonaito
+pwd:wanko4696
