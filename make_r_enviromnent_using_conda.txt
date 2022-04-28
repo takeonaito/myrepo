@@ -1,0 +1,13 @@
+## make r enviromnent using conda
+
+
+conda create --name r4_env
+conda install -c conda-forge r-base==4.1.3
+conda install -c conda-forge/label/gcc7 r-base
+conda install -c conda-forge/label/broken r-base
+conda install -c conda-forge/label/cf201901 r-base
+conda install -c conda-forge/label/cf202003 r-base
+
+## insall jupyter notebook
+conda install jupyter -n r4_env -c conda-forge
+conda install r-irkernel -n r4_env -c conda-forge
